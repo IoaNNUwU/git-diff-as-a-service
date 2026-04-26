@@ -8,11 +8,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
 
-      - PGDATA=/var/lib/postgresql/data
+      - PGDATA=${PGDATA}
+      - PGDATA_HOME=${PGDATA_HOME}
     ports:
       - "5432:5432"
     volumes:
-      - /home/docker/volumes/db:/var/lib/postgresql/data
+      - ${PGDATA_HOME}:${PGDATA}
     restart: always
 
   git-diff-app-migrate:
