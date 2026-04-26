@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log/slog"
@@ -11,6 +12,8 @@ import (
 
 type Logger struct {
 	slog.Logger
+
+	file *os.File
 }
 
 const (
@@ -35,10 +38,11 @@ func MustNewLogger(config Config) *Logger {
 	if config.Stream == None {
 		fmt.Println("Logging disabled for git-diff-app")
 		slog := *slog.New(slog.NewTextHandler(io.Discard, nil))
-		return &Logger{slog}
+		return &Logger{slog, nil}
 	}
 
 	var slogLvl slog.Level
+
 	switch config.Level {
 	case Debug:
 		slogLvl = slog.LevelDebug
@@ -65,8 +69,7 @@ func MustNewLogger(config Config) *Logger {
 
 	timestamp := time.Now().UTC().Format("2006-01-02T15-04-05.00000")
 
-	var file io.Writer = nil
-
+	var file *os.File = nil
 	if config.Folder != "" {
 		logFilePath := filepath.Join(
 			config.Folder,
@@ -118,5 +121,21 @@ func MustNewLogger(config Config) *Logger {
 	}
 
 	slogger := slog.New(handler)
-	return &Logger{*slogger}
+	return &Logger{*slogger, file}
+}
+
+func (l *Logger) Close() {
+	if l.file != nil {
+		if err := l.file.Close(); err != nil {
+			fmt.Println("unable to close log file: ", err)
+		}
+	}
+}
+
+func FromContext(ctx context.Context) *Logger {
+	log, ok := ctx.Value("log").(*Logger)
+	if !ok {
+		panic("unable to get logger from context. perhaps this function was called before AddLogger middleware")
+	}
+	return log
 }
