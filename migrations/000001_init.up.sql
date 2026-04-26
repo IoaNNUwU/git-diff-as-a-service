@@ -7,9 +7,8 @@ CREATE TABLE git_diff_app.users (
     full_name    VARCHAR(100) NOT NULL
                      CHECK(char_length(full_name) BETWEEN 3 AND 100),
 
-    email VARCHAR(20)
-                     CHECK(phone_number ~ '^\+[0-9]'
-                         AND char_length(phone_number) BETWEEN 10 AND 20)
+    email        VARCHAR(20)
+                     CHECK(char_length(email) BETWEEN 10 AND 20)
 );
 
 CREATE TABLE git_diff_app.files (

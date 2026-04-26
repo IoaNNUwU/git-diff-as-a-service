@@ -7,28 +7,38 @@ import (
 	"net/http"
 
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/logger"
+	core_http_middleware "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/middleware"
 )
 
 type HTTPServer struct {
 	log    *logger.Logger
 	mux    *http.ServeMux
 	config Config
+
+	middlewares []core_http_middleware.Middleware
 }
 
 func NewHTTPServer(
 	log *logger.Logger,
 	config Config,
+	middlewares ...core_http_middleware.Middleware,
 ) *HTTPServer {
 	return &HTTPServer{
+		log:    log,
 		mux:    http.NewServeMux(),
 		config: config,
+
+		middlewares: middlewares,
 	}
 }
 
 func (h *HTTPServer) Run(ctx context.Context) error {
+
+	mux := core_http_middleware.Chain(h.mux, h.middlewares...)
+
 	server := &http.Server{
 		Addr:    h.config.Addr,
-		Handler: h.mux,
+		Handler: mux,
 	}
 
 	ch := make(chan error)
@@ -36,7 +46,7 @@ func (h *HTTPServer) Run(ctx context.Context) error {
 	go func() {
 		defer close(ch)
 
-		h.log.Warn("HTTP server is starting")
+		h.log.Warn("HTTP server is starting on " + h.config.Addr)
 
 		err := server.ListenAndServe()
 
@@ -74,6 +84,6 @@ func (h *HTTPServer) RegisterAPIRouters(routers ...*APIVersionRouter) {
 
 		prefix := "/api/" + string(router.apiVersion)
 
-		h.mux.Handle(prefix + "/", http.StripPrefix(prefix, router))
+		h.mux.Handle(prefix+"/", http.StripPrefix(prefix, router))
 	}
 }

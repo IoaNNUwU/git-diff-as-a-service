@@ -6,6 +6,7 @@ import (
 	"syscall"
 
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/logger"
+	core_http_middleware "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/middleware"
 	core_http_server "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/server"
 	users_transport_http "github.com/ioannuwu/git-diff-as-a-service/internal/features/users/transport/http"
 )
@@ -26,7 +27,15 @@ func main() {
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.V1)
 	apiVersionRouter.RegisterRoutes(usersTransportHTTP.Routes()...)
 
-	httpServer := core_http_server.NewHTTPServer(log, core_http_server.MustNewConfig())
+	httpServer := core_http_server.NewHTTPServer(
+		log,
+		core_http_server.MustNewConfig(),
+
+		core_http_middleware.AddRequestID(),
+		core_http_middleware.AddLogger(log),
+		core_http_middleware.RecoverPanic(),
+		core_http_middleware.Trace(),
+	)
 
 	httpServer.RegisterAPIRouters(apiVersionRouter)
 

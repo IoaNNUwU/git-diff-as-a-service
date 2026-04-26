@@ -31,6 +31,5 @@ migration/action:
     "$(action)"
 
 run/git-diff-app:
-	echo ${HTTP_SERVER_SHUTDOWN_TIMEOUT}
 	go mod tidy && \
 	go run cmd/git-diff-app/main.go
