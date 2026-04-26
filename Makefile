@@ -29,3 +29,6 @@ migration/action:
 	docker compose run --rm git-diff-app-migrate -path /migrations \
     -database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@git-diff-app-postgres:5432/${POSTGRES_DB}?sslmode=disable \
     "$(action)"
+
+run/git-diff-app:
+	go run cmd/git-diff-app/main.go
