@@ -18,4 +18,5 @@ func NewUsersService(usersRepository UsersRepository) UsersService {
 
 type UsersRepository interface {
 	CreateUser(ctx context.Context, user domain.User) (domain.User, error)
+	DeleteUser(ctx context.Context, id int) error
 }

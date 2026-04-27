@@ -20,6 +20,7 @@ func NewUsersHTTPHandler(usersService UsersService) *UsersHTTPHandler {
 
 type UsersService interface {
 	CreateUser(ctx context.Context, user domain.User) (domain.User, error)
+	DeleteUser(ctx context.Context, id int) error
 }
 
 func (h *UsersHTTPHandler) Routes() []core_http_server.Route {
@@ -28,6 +29,11 @@ func (h *UsersHTTPHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodPost,
 			Pattern: "/users",
 			Handler: h.CreateUser,
+		},
+		{
+			Method:  http.MethodDelete,
+			Pattern: "/users",
+			Handler: h.DeleteUser,
 		},
 	}
 }

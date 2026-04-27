@@ -51,8 +51,6 @@ func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 }
 
 func (h *HTTPResponseHandler) errorResponse(statusCode int, err error, msg string) {
-	h.rw.WriteHeader(statusCode)
-
 	var response map[string]string
 	if err != nil {
 		response = map[string]string{"message": msg, "error": err.Error()}
@@ -63,10 +61,15 @@ func (h *HTTPResponseHandler) errorResponse(statusCode int, err error, msg strin
 	h.JSONResponse(&response, statusCode)
 }
 
-func (h *HTTPResponseHandler) JSONResponse(responceBody any, statusCode int) {
+func (h *HTTPResponseHandler) JSONResponse(responseBody any, statusCode int) {
+    h.rw.Header().Set("Content-Type", "application/json")
 	h.rw.WriteHeader(statusCode)
 
-	if err := json.NewEncoder(h.rw).Encode(responceBody); err != nil {
+	if err := json.NewEncoder(h.rw).Encode(responseBody); err != nil {
 		h.log.Error("unable to encode HTTP response", slog.String("error", err.Error()))
 	}
+}
+
+func (h *HTTPResponseHandler) StatusCodeResponse(statusCode int) {
+	h.rw.WriteHeader(statusCode)
 }

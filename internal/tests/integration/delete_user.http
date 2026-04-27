@@ -1,0 +1,7 @@
+DELETE http://localhost:5050/api/v1/users
+Content-Type: application/json
+
+
+{
+    "id": -1
+}

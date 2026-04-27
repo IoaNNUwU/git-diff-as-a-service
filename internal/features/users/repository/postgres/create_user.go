@@ -32,7 +32,7 @@ func (r *UsersRepository) CreateUser(ctx context.Context, user domain.User) (dom
 	if err != nil {
 		err := fmt.Errorf("scan error: %w", err)
 		log.Debug(err.Error())
-		return domain.User{}, err
+		return domain.User{}, ErrTimeout
 	}
 
 	userDomain := domain.NewUser(
