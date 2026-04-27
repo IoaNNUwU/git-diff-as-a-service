@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	Level  string `envconfig:"LEVEL"  required:"true"`
-	Format string `envconfig:"Format" required:"true"`
-	Stream string `envconfig:"STREAM"`
-	Folder string `envconfig:"FOLDER"`
+	Level     string `envconfig:"LEVEL"  required:"true"`
+	Format    string `envconfig:"Format" required:"true"`
+	Stream    string `envconfig:"STREAM"`
+	Folder    string `envconfig:"FOLDER"`
+	AddSource bool   `envconfig:"ADD_SOURCE"`
 }
 
 func MustNewConfig() Config {

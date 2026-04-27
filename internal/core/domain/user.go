@@ -16,8 +16,8 @@ type User struct {
 
 func NewUser(id int, version int, fullName string, email *string) User {
 	return User{
-		ID:       UninitializedID,
-		Version:  UninitializedVersion,
+		ID:       id,
+		Version:  version,
 		FullName: fullName,
 		Email:    email,
 	}

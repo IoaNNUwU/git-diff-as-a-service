@@ -3,12 +3,29 @@ package core_postgres_conn
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type Pool interface {
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
+	Close()
+
+	Timeout() time.Duration
+}
+
 type ConnectionPool struct {
 	*pgxpool.Pool
+	timeout time.Duration
+}
+
+func (c *ConnectionPool) Timeout() time.Duration {
+	return c.timeout
 }
 
 func MustNewConnectionPool(config Config, ctx context.Context) *ConnectionPool {
@@ -35,5 +52,5 @@ func MustNewConnectionPool(config Config, ctx context.Context) *ConnectionPool {
 		panic(fmt.Sprintf("unable to ping database: %s", err))
 	}
 
-	return &ConnectionPool{Pool: pool}
+	return &ConnectionPool{Pool: pool, timeout: config.Timeout}
 }

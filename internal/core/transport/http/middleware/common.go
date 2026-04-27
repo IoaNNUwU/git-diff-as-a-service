@@ -33,18 +33,12 @@ func AddLogger(log *logger.Logger) Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			requestID := r.Header.Get(RequestIDHeader)
 
-			slogger := log.With(
+			log := log.With(
 				"request_id", requestID,
 				"url", r.URL.String(),
 			)
 
-			log = &logger.Logger{
-				Logger: *slogger,
-			}
-
 			ctx := context.WithValue(r.Context(), "log", log)
-
-			log.Warn("Usable!!!!")
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
@@ -54,11 +48,8 @@ func AddLogger(log *logger.Logger) Middleware {
 func RecoverPanic() Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			println("RECOVER")
 			ctx := r.Context()
 			log := logger.FromContext(ctx)
-
-			log.Warn("HELLO")
 
 			respHandler := core_http_response.NewHTTPResponseHandler(w, log)
 

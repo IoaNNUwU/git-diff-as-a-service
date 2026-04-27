@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/domain"
-	"github.com/ioannuwu/git-diff-as-a-service/internal/core/logger"
 	core_http_request "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/request"
 	core_http_response "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/response"
 )
@@ -23,11 +22,9 @@ type CreateUserResponse struct {
 
 func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	log := logger.FromContext(ctx)
+	log := UsersHTTPTransportLogger(ctx)
 
 	responseHandler := core_http_response.NewHTTPResponseHandler(rw, log)
-
-	log.Debug("invoke CreateUser")
 
 	var request CreateUserRequest
 	if err := core_http_request.DecodeAndValidateRequest(r, &request); err != nil {
@@ -40,6 +37,7 @@ func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	user, err := h.usersService.CreateUser(ctx, userDomain)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "unable to create user")
+		return
 	}
 
 	response := dtoFromDomain(user)

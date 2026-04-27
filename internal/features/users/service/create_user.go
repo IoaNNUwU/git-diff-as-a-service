@@ -9,13 +9,19 @@ import (
 
 func (s *UsersService) CreateUser(ctx context.Context, user domain.User) (domain.User, error) {
 
+	log := UserServiceLogger(ctx)
+
 	if err := user.Validate(); err != nil {
-		return domain.User{}, fmt.Errorf("invalid user: %w", err)
+		err := fmt.Errorf("invalid user: %w", err)
+		log.Debug(err.Error())
+		return domain.User{}, err
 	}
-	
+
 	user, err := s.usersRepository.CreateUser(ctx, user)
 	if err != nil {
-		return domain.User{}, fmt.Errorf("unable to create user: %w", err)
+		err := fmt.Errorf("unable to create user: %w", err)
+		log.Debug(err.Error())
+		return domain.User{}, err
 	}
 
 	return user, nil

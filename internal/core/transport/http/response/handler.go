@@ -31,40 +31,33 @@ func (h *HTTPResponseHandler) PanicResponse(p any, msg string) {
 
 func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 
-	var (
-		statusCode int
-		log        func(string, ...any)
-	)
-
 	switch {
 	case errors.Is(err, core_errors.ErrInvalidArgument):
-		statusCode = http.StatusBadRequest
-		log = h.log.Warn
+		h.log.Debug(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusBadRequest, err, msg)
 
 	case errors.Is(err, core_errors.ErrNotFound):
-		statusCode = http.StatusNotFound
-		log = h.log.Debug
+		h.log.Debug(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusNotFound, err, msg)
 
 	case errors.Is(err, core_errors.ErrConflict):
-		statusCode = http.StatusConflict
-		log = h.log.Warn
+		h.log.Warn(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusConflict, nil, msg)
 
 	default:
-		statusCode = http.StatusInternalServerError
-		log = h.log.Error
+		h.log.Error(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusInternalServerError, nil, msg)
 	}
-
-	log(msg, slog.String("error", err.Error()))
-
-	h.errorResponse(statusCode, err, msg)
 }
 
 func (h *HTTPResponseHandler) errorResponse(statusCode int, err error, msg string) {
 	h.rw.WriteHeader(statusCode)
 
-	response := map[string]string{
-		"message": msg,
-		"error":   err.Error(),
+	var response map[string]string
+	if err != nil {
+		response = map[string]string{"message": msg, "error": err.Error()}
+	} else {
+		response = map[string]string{"message": msg}
 	}
 
 	h.JSONResponse(&response, statusCode)

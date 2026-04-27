@@ -59,7 +59,10 @@ func MustNewLogger(config Config) *Logger {
 	}
 	opts := slog.HandlerOptions{}
 	opts.Level = slogLvl
-	opts.AddSource = true
+
+	if config.AddSource {
+		opts.AddSource = true
+	}
 
 	if config.Format != Json && config.Format != PlainText {
 		panic(fmt.Sprintf(
@@ -138,4 +141,22 @@ func FromContext(ctx context.Context) *Logger {
 		panic("unable to get logger from context. perhaps this function was called before AddLogger middleware")
 	}
 	return log
+}
+
+func (l *Logger) With(args ...any) *Logger {
+	slog := l.Logger.With(args...)
+	return &Logger{
+		Logger: *slog,
+	}
+}
+
+func String(key string, value string) slog.Attr {
+	return slog.String(key, value)
+}
+
+func Err(key string, err error) slog.Attr {
+	if err != nil {
+		return slog.String(key, err.Error())	
+	}
+	return slog.String("", "")
 }
