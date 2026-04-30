@@ -29,7 +29,7 @@ const (
 )
 
 const (
-	Json      = "JSON"
+	JSON      = "JSON"
 	PlainText = "PLAINTEXT"
 )
 
@@ -64,15 +64,15 @@ func MustNewLogger(config Config) *Logger {
 		opts.AddSource = true
 	}
 
-	if config.Format != Json && config.Format != PlainText {
+	if config.Format != JSON && config.Format != PlainText {
 		panic(fmt.Sprintf(
-			"Log format %q does not exist. Should be one of %q, %q", config.Format, PlainText, Json,
+			"Log format %q does not exist. Should be one of %q, %q", config.Format, PlainText, JSON,
 		))
 	}
 
 	timestamp := time.Now().UTC().Format("2006-01-02T15-04-05.00000")
 
-	var file *os.File = nil
+	var file *os.File
 	if config.Folder != "" {
 		logFilePath := filepath.Join(
 			config.Folder,
@@ -89,14 +89,14 @@ func MustNewLogger(config Config) *Logger {
 		file = logFile
 	}
 
-	var stream io.Writer = nil
+	var stream io.Writer
 	if config.Stream == StdOut {
 		stream = os.Stdout
 	}
 
 	var handler slog.Handler
 	if file != nil && stream != nil {
-		if config.Format == Json {
+		if config.Format == JSON {
 			handler = slog.NewMultiHandler(
 				slog.NewJSONHandler(file, &opts),
 				slog.NewJSONHandler(stream, &opts),
@@ -108,13 +108,13 @@ func MustNewLogger(config Config) *Logger {
 			)
 		}
 	} else if file != nil {
-		if config.Format == Json {
+		if config.Format == JSON {
 			handler = slog.NewJSONHandler(file, &opts)
 		} else {
 			handler = slog.NewTextHandler(file, &opts)
 		}
 	} else if stream != nil {
-		if config.Format == Json {
+		if config.Format == JSON {
 			handler = slog.NewJSONHandler(stream, &opts)
 		} else {
 			handler = slog.NewTextHandler(stream, &opts)
@@ -135,8 +135,12 @@ func (l *Logger) Close() {
 	}
 }
 
+type LogAccess struct {}
+
+var Access LogAccess
+
 func FromContext(ctx context.Context) *Logger {
-	log, ok := ctx.Value("log").(*Logger)
+	log, ok := ctx.Value(Access).(*Logger)
 	if !ok {
 		panic("unable to get logger from context. perhaps this function was called before AddLogger middleware")
 	}

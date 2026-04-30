@@ -44,6 +44,10 @@ func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 		h.log.Warn(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusConflict, nil, msg)
 
+	case errors.Is(err, core_errors.ErrTimeout):
+		h.log.Warn(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusGatewayTimeout, nil, msg)
+
 	default:
 		h.log.Error(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusInternalServerError, nil, msg)
@@ -62,7 +66,7 @@ func (h *HTTPResponseHandler) errorResponse(statusCode int, err error, msg strin
 }
 
 func (h *HTTPResponseHandler) JSONResponse(responseBody any, statusCode int) {
-    h.rw.Header().Set("Content-Type", "application/json")
+	h.rw.Header().Set("Content-Type", "application/json")
 	h.rw.WriteHeader(statusCode)
 
 	if err := json.NewEncoder(h.rw).Encode(responseBody); err != nil {

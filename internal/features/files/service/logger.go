@@ -1,4 +1,4 @@
-package users_service
+package files_service
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/logger"
 )
 
-func UserServiceLogger(ctx context.Context) *logger.Logger {
+func FilesServiceLogger(ctx context.Context) *logger.Logger {
 	log := logger.FromContext(ctx)
 
 	return log.
-		With("feature", "users").
+		With("feature", "files").
 		With("layer", "service")
 }

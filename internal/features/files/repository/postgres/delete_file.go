@@ -1,4 +1,4 @@
-package users_postgres_repository
+package files_postgres_repository
 
 import (
 	"context"
@@ -7,16 +7,16 @@ import (
 	core_errors "github.com/ioannuwu/git-diff-as-a-service/internal/core/errors"
 )
 
-func (r *UsersRepository) DeleteUser(ctx context.Context, id int) error {
+func (r *FilesRepository) DeleteFile(ctx context.Context, id int) error {
 
-	log := UsersRepositoryPostgresLogger(ctx)
+	log := FilesRepositoryPostgresLogger(ctx)
 
 	ctx, cancel := context.WithTimeout(ctx, r.pool.Timeout())
 	defer cancel()
 
 	query := `
-	DELETE FROM git_diff_app.users
-	WHERE git_diff_app.users.id = $1;
+	DELETE FROM git_diff_app.files
+	WHERE git_diff_app.files.id = $1;
 	`
 
 	exec, err := r.pool.Exec(ctx, query, id)

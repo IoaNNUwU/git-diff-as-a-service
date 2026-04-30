@@ -5,19 +5,19 @@ import (
 	"net/http"
 )
 
-type ApiVersion string
+type APIVersion string
 
 var (
-	V1 = ApiVersion("v1")
-	V2 = ApiVersion("v2")
+	V1 = APIVersion("v1")
+	V2 = APIVersion("v2")
 )
 
 type APIVersionRouter struct {
 	*http.ServeMux
-	apiVersion ApiVersion
+	apiVersion APIVersion
 }
 
-func NewAPIVersionRouter(apiVersion ApiVersion) *APIVersionRouter {
+func NewAPIVersionRouter(apiVersion APIVersion) *APIVersionRouter {
 	return &APIVersionRouter{
 		ServeMux:   http.NewServeMux(),
 		apiVersion: apiVersion,

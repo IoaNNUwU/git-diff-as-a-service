@@ -28,6 +28,11 @@ func NewUserUninitialized(fullName string, email *string) User {
 }
 
 func (u *User) Validate() error {
+	
+	if u.ID == UninitializedID || u.Version == UninitializedVersion {
+		return fmt.Errorf("user wasn't properly initialized")
+	}
+
 	fullNameLength := len([]rune(u.FullName))
 
 	if fullNameLength < 3 || fullNameLength > 100 {

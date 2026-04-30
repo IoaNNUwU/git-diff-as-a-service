@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/domain"
+	core_errors "github.com/ioannuwu/git-diff-as-a-service/internal/core/errors"
 )
 
 func (r *UsersRepository) CreateUser(ctx context.Context, user domain.User) (domain.User, error) {
@@ -32,7 +33,7 @@ func (r *UsersRepository) CreateUser(ctx context.Context, user domain.User) (dom
 	if err != nil {
 		err := fmt.Errorf("scan error: %w", err)
 		log.Debug(err.Error())
-		return domain.User{}, ErrTimeout
+		return domain.User{}, core_errors.ErrTimeout
 	}
 
 	userDomain := domain.NewUser(

@@ -1,0 +1,6 @@
+DELETE http://localhost:5050/api/v1/files
+Content-Type: application/json
+
+{
+    "id": 32
+}

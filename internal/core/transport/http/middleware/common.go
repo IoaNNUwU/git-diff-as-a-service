@@ -38,7 +38,7 @@ func AddLogger(log *logger.Logger) Middleware {
 				"url", r.URL.String(),
 			)
 
-			ctx := context.WithValue(r.Context(), "log", log)
+			ctx := context.WithValue(r.Context(), logger.Access, log)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})

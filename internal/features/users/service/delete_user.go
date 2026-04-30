@@ -9,8 +9,6 @@ import (
 
 func (s *UsersService) DeleteUser(ctx context.Context, id int) error {
 
-	println(id)
-
 	log := UserServiceLogger(ctx)
 
 	if id < 0 {

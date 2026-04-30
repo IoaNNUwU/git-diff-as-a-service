@@ -28,7 +28,7 @@ func (c *ConnectionPool) Timeout() time.Duration {
 	return c.timeout
 }
 
-func MustNewConnectionPool(config Config, ctx context.Context) *ConnectionPool {
+func MustNewConnectionPool(ctx context.Context, config Config) *ConnectionPool {
 	connectionString := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		config.User,

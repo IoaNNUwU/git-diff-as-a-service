@@ -1,4 +1,4 @@
-package users_transport_http
+package files_transport_http
 
 import (
 	"net/http"
@@ -7,23 +7,23 @@ import (
 	core_http_response "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/response"
 )
 
-type DeleteUserRequest struct {
+type DeleteFileRequest struct {
 	ID int `json:"id" validate:"required,min=0"`
 }
 
-func (h *UsersHTTPHandler) DeleteUser(rw http.ResponseWriter, r *http.Request) {
+func (h *FilesHTTPHandler) DeleteFile(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	log := UsersHTTPTransportLogger(ctx)
+	log := FilesHTTPTransportLogger(ctx)
 
 	responseHandler := core_http_response.NewHTTPResponseHandler(rw, log)
 
-	var request DeleteUserRequest
+	var request DeleteFileRequest
 	if err := core_http_request.DecodeAndValidateRequest(r, &request); err != nil {
 		responseHandler.ErrorResponse(err, "unable to decode and validate HTTP request")
 		return
 	}
 
-	err := h.usersService.DeleteUser(ctx, request.ID)
+	err := h.usersService.DeleteFile(ctx, request.ID)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "unable to delete user")
 		return

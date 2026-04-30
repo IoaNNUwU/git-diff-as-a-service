@@ -1,0 +1,8 @@
+POST http://localhost:5050/api/v1/files
+Content-Type: application/json
+
+{
+    "file_name": "hello.txt",
+    "owner_id": 11,
+    "content": "Hello World!"
+}

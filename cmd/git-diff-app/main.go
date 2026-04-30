@@ -9,6 +9,8 @@ import (
 	core_postgres_conn "github.com/ioannuwu/git-diff-as-a-service/internal/core/repository/postgres/conn"
 	core_http_middleware "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/middleware"
 	core_http_server "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/server"
+	files_postgres_repository "github.com/ioannuwu/git-diff-as-a-service/internal/features/files/repository/postgres"
+	files_transport_http "github.com/ioannuwu/git-diff-as-a-service/internal/features/files/transport/http"
 	users_postgres_repository "github.com/ioannuwu/git-diff-as-a-service/internal/features/users/repository/postgres"
 	users_transport_http "github.com/ioannuwu/git-diff-as-a-service/internal/features/users/transport/http"
 )
@@ -23,15 +25,18 @@ func main() {
 
 	log.Debug("Starting git-diff-app")
 
-	poolConf := core_postgres_conn.MustNewConfig()
-	pool := core_postgres_conn.MustNewConnectionPool(poolConf, ctx)
-	repo := users_postgres_repository.NewUsersRepository(pool)
-
-	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(repo)
-	usersTransportHTTP.Routes()
-
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.V1)
+
+	poolConf := core_postgres_conn.MustNewConfig()
+	pool := core_postgres_conn.MustNewConnectionPool(ctx, poolConf)
+
+	usersRepo := users_postgres_repository.NewUsersRepository(pool)
+	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(usersRepo)
 	apiVersionRouter.RegisterRoutes(usersTransportHTTP.Routes()...)
+
+	filesRepo := files_postgres_repository.NewFilesRepository(pool)
+	filesTransportHTTP := files_transport_http.NewFilesHTTPHandler(filesRepo)
+	apiVersionRouter.RegisterRoutes(filesTransportHTTP.Routes()...)
 
 	httpServer := core_http_server.NewHTTPServer(
 		log,
