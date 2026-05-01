@@ -46,9 +46,14 @@ func (h *HTTPServer) Run(ctx context.Context) error {
 	go func() {
 		defer close(ch)
 
-		h.log.Warn("HTTP server is starting on " + h.config.Addr)
-
-		err := server.ListenAndServe()
+		var err error
+		if h.config.HTTPS {
+			h.log.Warn("HTTPS server starting on " + h.config.Addr)
+			err = server.ListenAndServeTLS("keys/server.crt", "keys/server.key")
+		} else {
+			h.log.Warn("HTTP server starting on " + h.config.Addr)
+			err = server.ListenAndServe()
+		}
 
 		if !errors.Is(err, http.ErrServerClosed) {
 			ch <- err

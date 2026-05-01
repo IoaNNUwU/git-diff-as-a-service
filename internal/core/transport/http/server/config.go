@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	Addr            string        `envconfig:"ADDR" required:"true"`
+	HTTPS           bool          `envconfig:"HTTPS" required:"true"`
 	ShutdownTimeout time.Duration `envconfig:"SHUTDOWN_TIMEOUT" required:"true"`
 }
 
@@ -17,6 +18,7 @@ func MustNewConfig() Config {
 
 	var config struct {
 		Addr            string `envconfig:"ADDR" required:"true"`
+		HTTPS           bool   `envconfig:"HTTPS" required:"true"`
 		ShutdownTimeout string `envconfig:"SHUTDOWN_TIMEOUT" required:"true"`
 	}
 
@@ -34,6 +36,7 @@ func MustNewConfig() Config {
 
 	return Config{
 		Addr:            config.Addr,
+		HTTPS:           config.HTTPS,
 		ShutdownTimeout: timeout,
 	}
 }

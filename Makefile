@@ -43,3 +43,10 @@ run/linter:
 run/git-diff-app:
 	go mod tidy && \
 	go run cmd/git-diff-app/main.go
+
+keygen:
+	mkdir -p keys && \
+	openssl req -x509 -newkey rsa:4096 \
+	-keyout keys/server.key \
+	-out keys/server.crt \
+	-days 365 -nodes -subj "/CN=localhost"
