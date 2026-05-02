@@ -16,8 +16,6 @@ func (r *FilesRepository) CreateFile(ctx context.Context, file domain.File) (dom
 	ctx, cancel := context.WithTimeout(ctx, r.pool.Timeout())
 	defer cancel()
 
-	println(file.OwnerID)
-
 	query := `
 	INSERT INTO git_diff_app.files (name, created_at, owner_id, expiration, content)
 	VALUES ($1, $2, $3, $4, $5)

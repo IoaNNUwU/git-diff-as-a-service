@@ -40,6 +40,10 @@ func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 		h.log.Debug(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusNotFound, err, msg)
 
+	case errors.Is(err, core_errors.ErrUnauthorized):
+		h.log.Debug(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusUnauthorized, err, msg)
+
 	case errors.Is(err, core_errors.ErrConflict):
 		h.log.Warn(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusConflict, nil, msg)

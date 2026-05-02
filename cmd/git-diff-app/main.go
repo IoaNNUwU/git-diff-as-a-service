@@ -34,6 +34,10 @@ func main() {
 	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(usersRepo)
 	apiVersionRouter.RegisterRoutes(usersTransportHTTP.Routes()...)
 
+	usersRepo := users_postgres_repository.NewUsersRepository(pool)
+	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(usersRepo)
+	apiVersionRouter.RegisterRoutes(usersTransportHTTP.Routes()...)
+
 	filesRepo := files_postgres_repository.NewFilesRepository(pool)
 	filesTransportHTTP := files_transport_http.NewFilesHTTPHandler(filesRepo)
 	apiVersionRouter.RegisterRoutes(filesTransportHTTP.Routes()...)

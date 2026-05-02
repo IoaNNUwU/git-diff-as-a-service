@@ -16,6 +16,8 @@ type Pool interface {
 	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
 	Close()
 
+	BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx, error)
+
 	Timeout() time.Duration
 }
 
