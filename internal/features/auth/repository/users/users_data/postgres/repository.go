@@ -4,12 +4,12 @@ import (
 	core_postgres_conn "github.com/ioannuwu/git-diff-as-a-service/internal/core/repository/postgres/conn"
 )
 
-type usersDataRepository struct {
+type UsersDataRepository struct {
 	pool core_postgres_conn.Pool
 }
 
-func NewUsersDataRepository(pool core_postgres_conn.Pool) *usersDataRepository {
-	return &usersDataRepository{
+func NewUsersDataRepository(pool core_postgres_conn.Pool) *UsersDataRepository {
+	return &UsersDataRepository{
 		pool: pool,
 	}
 }

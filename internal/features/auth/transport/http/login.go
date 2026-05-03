@@ -9,7 +9,7 @@ import (
 )
 
 type LoginRequest struct {
-	Username string `json:"email" validate:"required,min=5,max=100"`
+	Login    string `json:"login" validate:"required,min=5,max=100"`
 	Password string `json:"password" validate:"required,min=10,max=100"`
 }
 
@@ -30,7 +30,7 @@ func (h *AuthHTTPHandler) Login(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionKey, err := h.authService.Login(ctx, domain.Credentials{
-		Login:    request.Username,
+		Login:    request.Login,
 		Password: request.Password,
 	})
 	if err != nil {

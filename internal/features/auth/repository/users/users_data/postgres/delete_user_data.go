@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *usersDataRepository) DeleteUserData(ctx context.Context, tx pgx.Tx, id int) error {
+func (r *UsersDataRepository) DeleteUserData(ctx context.Context, tx pgx.Tx, id int) error {
 
 	log := usersDataRepositoryPostgresLogger(ctx)
 

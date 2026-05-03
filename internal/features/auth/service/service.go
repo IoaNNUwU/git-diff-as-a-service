@@ -28,7 +28,7 @@ type UsersRepository interface {
 }
 
 type SessionsRepository interface {
-	OpenSession(ctx context.Context, user_id int) (string, error)
+	OpenSession(ctx context.Context, userID int) (string, error)
 	GetUserIDForActiveSession(ctx context.Context, sessionID string) (int, error)
 	CloseSession(ctx context.Context, sessionID string) error
 }

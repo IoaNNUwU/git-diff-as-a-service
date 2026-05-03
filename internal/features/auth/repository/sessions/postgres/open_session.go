@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (r *SessionsRepository) OpenSession(ctx context.Context, user_id int) (string, error) {
+func (r *SessionsRepository) OpenSession(ctx context.Context, userID int) (string, error) {
 
 	log := authSessionsRepositoryPostgresLogger(ctx)
 
@@ -20,7 +20,7 @@ func (r *SessionsRepository) OpenSession(ctx context.Context, user_id int) (stri
 	`
 
 	now := time.Now()
-	row := r.pool.QueryRow(ctx, query, user_id, now, now.Add(1*time.Hour))
+	row := r.pool.QueryRow(ctx, query, userID, now, now.Add(1*time.Hour))
 
 	var sessionID string
 	err := row.Scan(&sessionID)

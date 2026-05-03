@@ -14,7 +14,7 @@ env/down:
 env/reset:
 	@echo -n " > Confirm env-reset? [y/N] " && read ans && [ $${ans:-N} = y ]
 	docker compose down git-diff-app-postgres
-	rm -rf ./pgdata
+	rm -rf ${PGDATA_HOME}
 
 migration/create:
 	@[ "$(name)" ] || { echo "Example usage: make migration/create name=migration_name"; exit 1; }

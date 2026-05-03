@@ -44,7 +44,7 @@ func (h *AuthHTTPHandler) Register(rw http.ResponseWriter, r *http.Request) {
 
 	sessionKey, err := h.authService.Register(ctx, credentials, user)
 	if err != nil {
-		responseHandler.ErrorResponse(err, "unable to login")
+		responseHandler.ErrorResponse(err, "unable to register")
 		return
 	}
 

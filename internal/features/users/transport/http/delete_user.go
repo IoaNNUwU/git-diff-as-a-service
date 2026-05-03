@@ -29,5 +29,5 @@ func (h *UsersHTTPHandler) DeleteUser(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responseHandler.StatusCodeResponse(http.StatusCreated)
+	responseHandler.StatusCodeResponse(http.StatusOK)
 }

@@ -5,8 +5,11 @@ import "errors"
 var (
 	ErrUnauthorized    = errors.New("unauthorized")
 	ErrExpiredSession  = errors.New("session expired")
+	ErrWrongPassword   = errors.New("wrong password")
 
 	ErrNotFound        = errors.New("not found")
+	ErrAlreadyExists   = errors.New("already exists")
+
 	ErrInvalidArgument = errors.New("invalid argument")
 
 	ErrConflict        = errors.New("conflict")

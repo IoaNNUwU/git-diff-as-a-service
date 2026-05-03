@@ -18,5 +18,5 @@ CREATE TABLE git_diff_app.sessions (
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id    INTEGER NOT NULL REFERENCES git_diff_app.users (id),
     created_at TIMESTAMPTZ NOT NULL,
-    ttl        TIMESTAMPTZ NOT NULL,
-)
+    ttl        TIMESTAMPTZ NOT NULL
+);

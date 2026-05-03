@@ -7,7 +7,7 @@ import (
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/domain"
 )
 
-func (r *usersDataRepository) GetUserData(ctx context.Context, id int) (domain.User, error) {
+func (r *UsersDataRepository) GetUserData(ctx context.Context, id int) (domain.User, error) {
 
 	log := usersDataRepositoryPostgresLogger(ctx)
 

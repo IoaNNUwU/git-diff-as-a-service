@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *usersDataRepository) CreateUserData(
+func (r *UsersDataRepository) CreateUserData(
 	ctx context.Context,
 	tx pgx.Tx,
 	user domain.User,
@@ -20,12 +20,12 @@ func (r *usersDataRepository) CreateUserData(
 	defer cancel()
 
 	query := `
-	INSERT INTO git_diff_app.users (full_name, email)
-	VALUES ($1, $2)
+	INSERT INTO git_diff_app.users (id, full_name, email)
+	VALUES ($1, $2, $3)
 	RETURNING id, version, full_name, email;
 	`
 
-	row := tx.QueryRow(ctx, query, user.FullName, user.Email)
+	row := tx.QueryRow(ctx, query, user.ID, user.FullName, user.Email)
 
 	var userModel userDataModel
 	err := row.Scan(

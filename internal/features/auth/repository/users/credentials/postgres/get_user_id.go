@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *credentialsRepository) GetUserID(
+func (r *CredentialsRepository) GetUserID(
 	ctx context.Context,
 	credentials domain.Credentials,
 ) (int, error) {
@@ -49,12 +49,19 @@ func (r *credentialsRepository) GetUserID(
 	query = `
 	SELECT user_id
 	FROM git_diff_app.credentials
-	WHERE login = $1 
-	AND password_hash = crypt($2, salt);
+	WHERE
+		login = $1
+		AND password_hash = public.crypt($2, salt);
 	`
-	row, err := tx.Query(ctx, query, credentials.Login, credentials.Password)
+
+	row := tx.QueryRow(ctx, query, credentials.Login, credentials.Password)
+
+	var userID int
+	err = row.Scan(&userID)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return domain.UninitializedID, core_errors.ErrUnauthorized
+		err := fmt.Errorf("unable to get credentials: %w", core_errors.ErrWrongPassword)
+		log.Debug(err.Error())
+		return domain.UninitializedID, err
 	}
 	if err != nil {
 		err := fmt.Errorf("unable to get credentials: %w", err)
@@ -62,18 +69,11 @@ func (r *credentialsRepository) GetUserID(
 		return domain.UninitializedID, err
 	}
 
-	var user_id int
-	if err := row.Scan(&user_id); err != nil {
-		err := fmt.Errorf("unable to get credentials: %w", err)
-		log.Debug(err.Error())
-		return domain.UninitializedID, err
-	}
-
 	if err = tx.Commit(ctx); err != nil {
-		err := fmt.Errorf("unable to commit transaction: %w", err)
+		err := fmt.Errorf("commit transaction failed: %w", err)
 		log.Debug(err.Error())
 		return domain.UninitializedID, err
 	}
 
-	return user_id, nil
+	return userID, nil
 }
