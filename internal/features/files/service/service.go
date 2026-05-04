@@ -19,4 +19,5 @@ func NewFilesService(usersRepository FilesRepository) FilesService {
 type FilesRepository interface {
 	CreateFile(ctx context.Context, file domain.File) (domain.File, error)
 	DeleteFile(ctx context.Context, id int) error
+	DeleteFileByAuthor(ctx context.Context, id int, authorID int) error
 }
