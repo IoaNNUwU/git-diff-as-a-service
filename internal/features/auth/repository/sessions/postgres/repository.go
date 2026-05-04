@@ -1,6 +1,9 @@
 package auth_sessions_postgres_repository
 
 import (
+	"context"
+
+	"github.com/ioannuwu/git-diff-as-a-service/internal/core/logger"
 	core_postgres_conn "github.com/ioannuwu/git-diff-as-a-service/internal/core/repository/postgres/conn"
 	auth_service "github.com/ioannuwu/git-diff-as-a-service/internal/features/auth/service"
 )
@@ -12,8 +15,13 @@ type SessionsRepository struct {
 	pool core_postgres_conn.Pool
 }
 
-func NewSessionsRepository(pool core_postgres_conn.Pool) *SessionsRepository {
-	return &SessionsRepository{
+func NewSessionsRepository(ctx context.Context, log *logger.Logger, pool core_postgres_conn.Pool) *SessionsRepository {
+
+	repo := &SessionsRepository{
 		pool: pool,
 	}
+
+	repo.runCron(ctx, log)
+
+	return repo
 }

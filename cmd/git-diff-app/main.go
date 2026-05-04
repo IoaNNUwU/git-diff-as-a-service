@@ -42,7 +42,7 @@ func main() {
 	*/
 
 	usersRepo := auth_repository.DefaultUsersRepository(pool)
-	sessionsRepo := auth_sessions_postgres_repository.NewSessionsRepository(pool)
+	sessionsRepo := auth_sessions_postgres_repository.NewSessionsRepository(ctx, log, pool)
 
 	authService := auth_service.NewAuthService(sessionsRepo, usersRepo)
 
