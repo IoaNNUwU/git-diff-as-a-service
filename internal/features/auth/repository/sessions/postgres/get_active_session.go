@@ -15,7 +15,7 @@ func (s *SessionsRepository) GetUserIDForActiveSession(ctx context.Context, sess
 	defer cancel()
 
 	query := `
-	SELECT user_id, (SELECT git_diff_app.sessions.ttl > now()) AS expired
+	SELECT user_id, (SELECT git_diff_app.sessions.ttl < now()) AS expired
 	FROM git_diff_app.sessions
 	WHERE git_diff_app.sessions.id = $1;
 	`

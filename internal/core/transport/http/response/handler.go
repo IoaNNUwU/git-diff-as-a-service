@@ -39,26 +39,42 @@ func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 	case errors.Is(err, core_errors.ErrInvalidArgument):
 		h.log.Debug(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusBadRequest, err, msg)
+		return
 
 	case errors.Is(err, core_errors.ErrNotFound):
 		h.log.Debug(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusNotFound, err, msg)
+		return
 
 	case errors.Is(err, core_errors.ErrAlreadyExists):
 		h.log.Debug(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusConflict, err, msg)
+		return
 
 	case errors.Is(err, core_errors.ErrUnauthorized):
 		h.log.Debug(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusUnauthorized, err, msg)
+		return
+
+	case errors.Is(err, core_errors.ErrExpiredSession):
+		h.log.Debug(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusUnauthorized, err, msg)
+		return
+
+	case errors.Is(err, core_errors.ErrPermission):
+		h.log.Debug(msg, slog.String("error", err.Error()))
+		h.errorResponse(http.StatusForbidden, err, msg)
+		return
 
 	case errors.Is(err, core_errors.ErrConflict):
 		h.log.Warn(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusConflict, nil, msg)
+		return
 
 	case errors.Is(err, core_errors.ErrTimeout):
 		h.log.Warn(msg, slog.String("error", err.Error()))
 		h.errorResponse(http.StatusGatewayTimeout, nil, msg)
+		return
 
 	default:
 		h.log.Error(msg, slog.String("error", err.Error()))

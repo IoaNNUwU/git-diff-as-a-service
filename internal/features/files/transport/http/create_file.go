@@ -34,7 +34,7 @@ func (h *FilesHTTPHandler) CreateFile(rw http.ResponseWriter, r *http.Request) {
 
 	userDomain := domainFromDTO(request)
 
-	user, err := h.usersService.CreateFile(ctx, userDomain)
+	user, err := h.filesService.CreateFile(ctx, userDomain)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "unable to create file")
 		return

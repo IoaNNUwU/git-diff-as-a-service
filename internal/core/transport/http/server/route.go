@@ -1,21 +1,14 @@
 package core_http_server
 
-import "net/http"
+import (
+	"net/http"
+
+	core_http_middleware "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/middleware"
+)
 
 type Route struct {
-	Method  string
-	Pattern string
-	Handler http.HandlerFunc
-}
-
-func NewRoute(
-	method string,
-	path string,
-	handler http.HandlerFunc,
-) Route {
-	return Route{
-		Method:  method,
-		Pattern: path,
-		Handler: handler,
-	}
+	Method      string
+	Pattern     string
+	Handler     http.HandlerFunc
+	Middlewares []core_http_middleware.Middleware
 }

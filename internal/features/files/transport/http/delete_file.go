@@ -23,7 +23,7 @@ func (h *FilesHTTPHandler) DeleteFile(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.usersService.DeleteFile(ctx, request.ID)
+	err := h.filesService.DeleteFile(ctx, request.ID)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "unable to delete user")
 		return

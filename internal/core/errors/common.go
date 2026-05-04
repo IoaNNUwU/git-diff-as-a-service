@@ -6,6 +6,7 @@ var (
 	ErrUnauthorized    = errors.New("unauthorized")
 	ErrExpiredSession  = errors.New("session expired")
 	ErrWrongPassword   = errors.New("wrong password")
+	ErrPermission      = errors.New("insufficient permission")
 
 	ErrNotFound        = errors.New("not found")
 	ErrAlreadyExists   = errors.New("already exists")
