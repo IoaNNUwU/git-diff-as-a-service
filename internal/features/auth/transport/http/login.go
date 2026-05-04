@@ -13,10 +13,6 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required,min=10,max=100"`
 }
 
-type LoginResponse struct {
-	SessionKey string `json:"session_key"`
-}
-
 func (h *AuthHTTPHandler) Login(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := AuthHTTPTransportLogger(ctx)
@@ -38,9 +34,17 @@ func (h *AuthHTTPHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := LoginResponse{
-		SessionKey: sessionKey,
+	cookie := http.Cookie{
+		Name:     SessionKeyCookie,
+		Value:    sessionKey,
+		HttpOnly: true,
+		Path:     "/",
+
+		Secure: h.useHTTPS,
+
+		MaxAge:   3600,
 	}
 
-	responseHandler.JSONResponse(&response, http.StatusCreated)
+	responseHandler.SetCookie(&cookie)
+	responseHandler.StatusCodeResponse(http.StatusOK)
 }

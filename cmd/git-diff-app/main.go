@@ -46,7 +46,9 @@ func main() {
 
 	authService := auth_service.NewAuthService(sessionsRepo, usersRepo)
 
-	authTransportHTTP := auth_transport_http.NewAuthHTTPHandler(authService)
+	coreHTTPServerConfig := core_http_server.MustNewConfig()
+
+	authTransportHTTP := auth_transport_http.NewAuthHTTPHandler(authService, coreHTTPServerConfig.HTTPS)
 	apiVersionRouter.RegisterRoutes(authTransportHTTP.Routes()...)
 
 	filesRepo := files_postgres_repository.NewFilesRepository(pool)

@@ -13,7 +13,7 @@ func (r *SessionsRepository) runCron(ctx context.Context, log *logger.Logger) {
 	log = log.With("feature", "auth").
 		With("layer", "repository/sessions/postgres")
 
-	ticker := time.NewTicker(10 * time.Minute)
+	ticker := time.NewTicker(1 * time.Minute)
 
 	go func() {
 		log.Debug("cron job started: clear expired sessions")
@@ -39,9 +39,10 @@ func (r *SessionsRepository) clearExpiredSessions(ctx context.Context, log *logg
 	WHERE git_diff_app.sessions.ttl < now();
 	`
 
-	_, err := r.pool.Exec(ctx, query)
+	tag, err := r.pool.Exec(ctx, query)
 	if err != nil {
 		err := fmt.Errorf("execute delete: %w", err)
 		log.Debug(err.Error())
 	}
+	log.Debug("cron job: expired sessions deleted sucessfuly", "closed_sessions", tag.RowsAffected())
 }

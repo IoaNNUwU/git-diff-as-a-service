@@ -8,13 +8,19 @@ import (
 	core_http_server "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/server"
 )
 
+var (
+	SessionKeyCookie = "session_key"
+)
+
 type AuthHTTPHandler struct {
 	authService AuthService
+	useHTTPS bool
 }
 
-func NewAuthHTTPHandler(authService AuthService) *AuthHTTPHandler {
+func NewAuthHTTPHandler(authService AuthService, useHTTPS bool) *AuthHTTPHandler {
 	return &AuthHTTPHandler{
 		authService: authService,
+		useHTTPS: useHTTPS,
 	}
 }
 

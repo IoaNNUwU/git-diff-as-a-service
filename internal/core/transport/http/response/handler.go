@@ -20,6 +20,10 @@ func NewHTTPResponseHandler(rw http.ResponseWriter, log *logger.Logger) *HTTPRes
 	return &HTTPResponseHandler{rw, log}
 }
 
+func (h *HTTPResponseHandler) SetCookie(cookie *http.Cookie) {
+	http.SetCookie(h.rw, cookie)
+}
+
 func (h *HTTPResponseHandler) PanicResponse(p any, msg string) {
 	statusCode := http.StatusInternalServerError
 

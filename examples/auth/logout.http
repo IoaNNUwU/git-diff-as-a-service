@@ -1,6 +1,3 @@
 DELETE http://localhost:5050/api/v1/auth/logout
 Content-Type: application/json
-
-{
-    "session_key": "76548bdd-cfb1-404f-8ac1-4a3161d9416f"
-}
+Cookie: session_key=7ed5647e-514b-49e7-9724-2310b61c834d; Path=/; Max-Age=3600; HttpOnly

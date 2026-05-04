@@ -16,10 +16,6 @@ type registerRequest struct {
 	Email    *string `json:"email" validate:"min=5,max=50"`
 }
 
-type registerResponse struct {
-	SessionKey string `json:"session_key"`
-}
-
 func (h *AuthHTTPHandler) Register(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := AuthHTTPTransportLogger(ctx)
@@ -48,9 +44,16 @@ func (h *AuthHTTPHandler) Register(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := registerResponse{
-		SessionKey: sessionKey,
-	}
+	cookie := http.Cookie{
+		Name:     SessionKeyCookie,
+		Value:    sessionKey,
+		HttpOnly: true,
+		Path:     "/",
 
-	responseHandler.JSONResponse(&response, http.StatusCreated)
+		Secure: h.useHTTPS,
+
+		MaxAge:   3600,
+	}
+	responseHandler.SetCookie(&cookie)
+	responseHandler.StatusCodeResponse(http.StatusCreated)
 }

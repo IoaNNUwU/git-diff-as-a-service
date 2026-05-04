@@ -2,7 +2,7 @@ POST http://localhost:5050/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "login": "login5",
+    "login": "login222222",
     "password": "1234567890",
 
     "full_name": "Alex",
