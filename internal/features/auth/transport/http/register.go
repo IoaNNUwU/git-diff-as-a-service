@@ -3,6 +3,7 @@ package auth_transport_http
 import (
 	"net/http"
 
+	core_auth "github.com/ioannuwu/git-diff-as-a-service/internal/core/auth"
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/domain"
 	core_http_request "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/request"
 	core_http_response "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/response"
@@ -45,7 +46,7 @@ func (h *AuthHTTPHandler) Register(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie := http.Cookie{
-		Name:     SessionKeyCookie,
+		Name:     core_auth.SessionCookie,
 		Value:    sessionKey,
 		HttpOnly: true,
 		Path:     "/",

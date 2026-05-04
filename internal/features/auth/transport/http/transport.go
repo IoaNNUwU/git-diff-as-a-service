@@ -8,10 +8,6 @@ import (
 	core_http_server "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/server"
 )
 
-var (
-	SessionKeyCookie = "session_key"
-)
-
 type AuthHTTPHandler struct {
 	authService AuthService
 	useHTTPS bool

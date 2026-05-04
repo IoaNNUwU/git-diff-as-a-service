@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	core_auth "github.com/ioannuwu/git-diff-as-a-service/internal/core/auth"
 	core_errors "github.com/ioannuwu/git-diff-as-a-service/internal/core/errors"
 	"github.com/ioannuwu/git-diff-as-a-service/internal/core/logger"
 	core_http_response "github.com/ioannuwu/git-diff-as-a-service/internal/core/transport/http/response"
@@ -23,7 +24,7 @@ func NewAuthMiddleware(sessionsService SessionsService) Middleware {
 
 			responseHandler := core_http_response.NewHTTPResponseHandler(rw, log)
 
-			sessionKey, err := r.Cookie("session_key")
+			sessionKey, err := r.Cookie(core_auth.SessionCookie)
 			if err != nil {
 				err = fmt.Errorf("unable to get session key: %w", core_errors.ErrUnauthorized)
 				responseHandler.ErrorResponse(err, "unable to get session key")
@@ -32,20 +33,15 @@ func NewAuthMiddleware(sessionsService SessionsService) Middleware {
 
 			userID, err := sessionsService.GetUserIDForActiveSession(ctx, sessionKey.Value)
 			if err != nil {
-				err = fmt.Errorf("unable to get user id: %w", core_errors.ErrExpiredSession)
-				responseHandler.ErrorResponse(err, "unable to get user id")
+				err = fmt.Errorf("authentification failed: %w", core_errors.ErrExpiredSession)
+				responseHandler.ErrorResponse(err, "authentification failed")
 				return
 			}
 
-			if userID != 1 {
-				err = fmt.Errorf("unable to get user id: %w", core_errors.ErrPermission)
-				responseHandler.ErrorResponse(err, "unable to get user id")
-				return
-			}
+			ctx = context.WithValue(ctx, core_auth.UserID, userID)
+			ctx = context.WithValue(ctx, core_auth.UserRole, core_auth.RoleUser)
 
-			// TODO: Put user ROLE and USER_ID in context
-
-			next.ServeHTTP(rw, r)
+			next.ServeHTTP(rw, r.WithContext(ctx))
 		})
 	}
 }
