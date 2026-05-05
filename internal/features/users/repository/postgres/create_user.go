@@ -16,17 +16,18 @@ func (r *UsersRepository) CreateUser(ctx context.Context, user domain.User) (dom
 	defer cancel()
 
 	query := `
-	INSERT INTO git_diff_app.users (full_name, email)
-	VALUES ($1, $2)
+	INSERT INTO git_diff_app.users (role, full_name, email)
+	VALUES ($1, $2, $3)
 	RETURNING id, version, full_name, email;
 	`
 
-	row := r.pool.QueryRow(ctx, query, user.FullName, user.Email)
+	row := r.pool.QueryRow(ctx, query, user.Role, user.FullName, user.Email)
 
 	var userModel UserModel
 	err := row.Scan(
 		&userModel.ID,
 		&userModel.Version,
+		&userModel.Role,
 		&userModel.FullName,
 		&userModel.Email,
 	)
@@ -39,6 +40,7 @@ func (r *UsersRepository) CreateUser(ctx context.Context, user domain.User) (dom
 	userDomain := domain.NewUser(
 		userModel.ID,
 		userModel.Version,
+		userModel.Role,
 		userModel.FullName,
 		userModel.Email,
 	)

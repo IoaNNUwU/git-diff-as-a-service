@@ -25,6 +25,7 @@ func NewAuthService(sessionsRepository SessionsRepository, usersRepository Users
 type UsersRepository interface {
 	CreateUser(ctx context.Context, user domain.User, credentials domain.Credentials) (domain.User, error)
 	GetUser(ctx context.Context, credentials domain.Credentials) (domain.User, error)
+	GetUserRole(ctx context.Context, userID int) (string, error)
 }
 
 type SessionsRepository interface {

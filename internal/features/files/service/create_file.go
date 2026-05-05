@@ -13,8 +13,9 @@ func (s *FilesService) CreateFile(ctx context.Context, file domain.File) (domain
 
 	log := FilesServiceLogger(ctx)
 
+	userRole := core_auth.RoleFromContext(ctx)
 	userID := core_auth.UserIDFromContext(ctx)
-	if userID != file.OwnerID {
+	if userID != file.OwnerID && userRole != core_auth.RoleAdmin {
 		err := fmt.Errorf("unable to add file owned by another user: %w", core_errors.ErrPermission)
 		log.Debug(err.Error())
 		return domain.File{}, err

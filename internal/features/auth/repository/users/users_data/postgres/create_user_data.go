@@ -20,17 +20,18 @@ func (r *UsersDataRepository) CreateUserData(
 	defer cancel()
 
 	query := `
-	INSERT INTO git_diff_app.users (id, full_name, email)
-	VALUES ($1, $2, $3)
-	RETURNING id, version, full_name, email;
+	INSERT INTO git_diff_app.users (id, full_name, email, role)
+	VALUES ($1, $2, $3, $4)
+	RETURNING id, version, role, full_name, email;
 	`
 
-	row := tx.QueryRow(ctx, query, user.ID, user.FullName, user.Email)
+	row := tx.QueryRow(ctx, query, user.ID, user.FullName, user.Email, user.Role)
 
 	var userModel userDataModel
 	err := row.Scan(
 		&userModel.ID,
 		&userModel.Version,
+		&userModel.Role,
 		&userModel.FullName,
 		&userModel.Email,
 	)
@@ -43,6 +44,7 @@ func (r *UsersDataRepository) CreateUserData(
 	userDomain := domain.NewUser(
 		userModel.ID,
 		userModel.Version,
+		userModel.Role,
 		userModel.FullName,
 		userModel.Email,
 	)

@@ -15,7 +15,7 @@ func (r *UsersDataRepository) GetUserData(ctx context.Context, id int) (domain.U
 	defer cancel()
 
 	query := `
-	SELECT id, version, full_name, email
+	SELECT id, version, role, full_name, email
 	FROM git_diff_app.users
 	WHERE git_diff_app.users.id = $1;
 	`
@@ -26,6 +26,7 @@ func (r *UsersDataRepository) GetUserData(ctx context.Context, id int) (domain.U
 	err := row.Scan(
 		&userModel.ID,
 		&userModel.Version,
+		&userModel.Role,
 		&userModel.FullName,
 		&userModel.Email,
 	)
@@ -38,6 +39,7 @@ func (r *UsersDataRepository) GetUserData(ctx context.Context, id int) (domain.U
 	userDomain := domain.NewUser(
 		userModel.ID,
 		userModel.Version,
+		userModel.Role,
 		userModel.FullName,
 		userModel.Email,
 	)

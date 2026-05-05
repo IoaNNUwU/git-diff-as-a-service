@@ -54,7 +54,7 @@ func main() {
 	filesRepo := files_postgres_repository.NewFilesRepository(pool)
 	filesTransportHTTP := files_transport_http.NewFilesHTTPHandler(filesRepo)
 	
-	authMiddleware := core_http_middleware.NewAuthMiddleware(sessionsRepo)
+	authMiddleware := core_http_middleware.NewAuthMiddleware(authService)
 	apiVersionRouter.RegisterRoutes(filesTransportHTTP.Routes(authMiddleware)...)
 
 	httpServer := core_http_server.NewHTTPServer(

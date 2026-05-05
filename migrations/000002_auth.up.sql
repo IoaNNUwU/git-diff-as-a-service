@@ -20,3 +20,6 @@ CREATE TABLE git_diff_app.sessions (
     created_at TIMESTAMPTZ NOT NULL,
     ttl        TIMESTAMPTZ NOT NULL
 );
+
+ALTER TABLE git_diff_app.users 
+    ADD COLUMN role VARCHAR(5) DEFAULT 'user';
