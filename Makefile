@@ -16,18 +16,41 @@ env/reset:
 	docker compose down git-diff-app-postgres
 	rm -rf ${PGDATA_HOME}
 
-migration/create:
-	@[ "$(name)" ] || { echo "Example usage: make migration/create name=migration_name"; exit 1; }
+test/env/up:
+	docker compose up -d git-diff-app-test-postgres
+
+test/env/reset:
+	@make test/env/down
+
+test/env/down:
+	docker compose down git-diff-app-test-postgres
+
+test/migrate/up:
+	@make test/migrate/action action=up
+
+test/migrate/down:
+	@make test/migrate/action action=down
+
+test/migrate/action:
+	docker compose run --rm git-diff-app-migrate -path /migrations \
+	-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@git-diff-app-test-postgres:5432/${POSTGRES_DB}?sslmode=disable \
+	"$(action)"
+
+test:
+	go run cmd/tests/integration_tests.go
+
+migrate/create:
+	@[ "$(name)" ] || { echo "Example usage: make migrate/create name=migration_name"; exit 1; }
 	docker compose run --rm git-diff-app-migrate create -ext sql -dir /migrations -seq $(name)
 
-migration/upgrade:
-	@make migration/action action=up
+migrate/up:
+	@make migrate/action action=up
 
-migration/downgrade:
-	@make migration/action action=down
+migrate/down:
+	@make migrate/action action=down
 
-migration/action:
-	@[ "$(action)" ] || { echo "Example usage: make migration/action action=up 3"; exit 1; }
+migrate/action:
+	@[ "$(action)" ] || { echo "Example usage: make migrate/action action=up 3"; exit 1; }
 	docker compose run --rm git-diff-app-migrate -path /migrations \
     -database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@git-diff-app-postgres:5432/${POSTGRES_DB}?sslmode=disable \
     "$(action)"
@@ -44,7 +67,7 @@ run/git-diff-app:
 	go mod tidy && \
 	go run cmd/git-diff-app/main.go
 
-keygen:
+ssl/keygen:
 	mkdir -p keys && \
 	openssl req -x509 -newkey rsa:4096 \
 	-keyout keys/server.key \
